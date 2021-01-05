@@ -207,3 +207,56 @@
 	"funcoes_menus.h"
 	"funcoes_aulas.h"
 
+1608723981 source:c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\funcoes_auxiliares.c
+	<stdio.h>
+	<string.h>
+	"funcoes_auxiliares.h"
+
+1608723981 c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\funcoes_auxiliares.h
+	"constantes.h"
+
+1609787821 c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\constantes.h
+
+1608723981 source:c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\funcoes_estudantes.c
+	<stdio.h>
+	<ctype.h>
+	"constantes.h"
+	"funcoes_auxiliares.h"
+
+1609690000 source:c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\funcoes_menus.c
+	<stdio.h>
+	<ctype.h>
+	"constantes.h"
+	"funcoes_auxiliares.h"
+	"funcoes_menus.h"
+	"funcoes_aulas.h"
+
+1609689704 c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\funcoes_menus.h
+	"constantes.h"
+
+1609787821 c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\funcoes_aulas.h
+	"constantes.h"
+
+1608723981 source:c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\funcoes_uc.c
+	<stdio.h>
+	<ctype.h>
+	"constantes.h"
+	"funcoes_auxiliares.h"
+
+1609787821 source:c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\main.c
+	<stdio.h>
+	<stdlib.h>
+	<locale.h>
+	"constantes.h"
+	"funcoes_auxiliares.h"
+	"funcoes_estudantes.h"
+	"funcoes_uc.h"
+	"funcoes_aulas.h"
+	"funcoes_menus.h"
+
+1608723981 c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\funcoes_estudantes.h
+	"constantes.h"
+
+1608723981 c:\mariana pastas\licenciatura ei\programacao_i\projeto_g2_github\funcoes_uc.h
+	"constantes.h"
+

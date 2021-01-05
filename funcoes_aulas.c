@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include "constantes.h"
 #include "funcoes_auxiliares.h"
@@ -7,53 +8,82 @@
 
 
 tipoAula lerDadosAula(){
-    tipoAulaOnline aula;
+    tipoAula aula;
     lerString("Indique Descrição: ", aula.designacao, MAX_AULAS);
     lerString("Docente: ", aula.docente, MAX_AULAS);
     //campo tipo contador - tem a haver com a funcionalidade do programa
-    aula.numAulasRealiadas = 0;
-    aula.gravacao = 0;
+    aula.gavacao = 0;
     aula.estadoAula = 0;
     return aula;
 }
-//tipoAula *acrescentaAula(tipoAula vAula[], int *num, tipoUc vetorUc[], int numCodigo)
-tipoAula *acrescentaAula(tipoAula vAula[], int *num){​
 
-    int pos;​
-    tipoAula *pAula, dados; //posUc
-    pAula = vAula;​ // ponteiro auxiliar p/ ñ perder a 1ºposicao do vetor
+int procuraAulaNome(tipoAula vAula[], int num, char procAula[]){
+    int i, pos;
+    pos = -1;
+
+    for (i=0; i<num; i++){
+        if (strcmp(vAula[i].designacao, procAula) == 0){  /* Elemento encontrado */
+            pos = i;       /* guarda posição de numero em vAula */
+            i = num;    /* para concluir pesquisa (sair do for) */
+        }
+    }
+    return pos;
+}
+
+
+//tipoAula *acrescentaAula(tipoAula vAula[], int *num)
+tipoAula *acrescentaAula(tipoAula vAula[], int *num, tipoUc vetorUc[], int numCodigo){​
+
+    int posAula, posUc;​
+    tipoAula *pAula, dados;
+    pAula = vAula;  ​    // ponteiro auxiliar p/ ñ perder a 1ºposicao do vetor
+
     dados = lerDadosAula();
-    pos = procuraAulaNome(vAula,*n,dados.designacao);​
+    posAula = procuraAulaNome(vAula,*num,dados.designacao);​
 
-    if (pos != -1){ ​
-        printf("Nome de Aula ja existente");​
+    if(posAula != -1){ ​
+        printf("Nome de Aula já existente");
     }​
-    else {	​
+    else{	​
         // procura o codigo no vetor das UCs
         posUc = procuraUC(vetorUc,numCodigo,dados.codigo);​ //ver se Maria já tem esta funcao!!!!!
-        if (posUc == -1){ ​
-            printf("UC não existe!");​
-        }else{
 
-            vAula = realloc(vAula,(*n+1)*sizeof(tipoAula));​ //obter espaço para  + 1 elemento
+        if(posUc == -1){ ​
+            printf("Uc não existe");
+        }
+        else{
 
-            if (vAula == NULL){​
-                printf ("Erro - Impossivel agendar Aula");​
+            vAula = realloc(vAula,(*num+1)*sizeof(tipoAula));​ //obter espaço para  + 1 elemento
+
+            if(vAula == NULL){​
+                printf("ERRO - Impossivel inserir Aula");
                 vAula = pAula;  // recuperar o valor de veotr vAula
             }
-            else {​
-                //dados.codigo = vetorUc[posUc].codigo ???????????
-                vAula[*num]= dados;​
-                (*num)++;  // Atualiza numero funcionarios
+            else{​
+                //dados.codigo = vetorUc[posUc].codigo;
+                vAula[*num]= dados;​   //cria o campo para nova aula no vetor
+                (*num)++;  // Atualiza numero de aulas
 
                 /*vLoja[posUc].numFunc++;
                 vLoja[posUc].custoV += dados.venc;*/
-
             }
         }
     }​
     return vAula; ​
 }​
+
+int procuraUc(tipoUc vetorUc[MAX_UC], int numUc, int codigoUC){
+    int i, posicao;
+    posicao = -1;
+
+    for (i=0; i<numUc; i++){
+        if (vetorUc[i].codigo == codigoUC){
+            posicao = i;
+            i = numUc;
+        }
+    }
+    return posicao;
+}
 
 /*
 tipoAula *insereAula(int num){
@@ -105,18 +135,6 @@ tipoAula *eliminaAula(tipoAula vAula[], int *num, char designacao[]){​
 } ​
 
 
-int procuraAulaNome(tipoAula vAula[], int num, char procAula[]){
-    int i, pos;
-    pos = -1;
-
-    for (i=0; i<num; i++){
-        if (strcmp(vAula[i].designacao, procAula) == 0){  /* Elemento encontrado */
-            pos = i;       /* guarda posição de numero em vAula */
-            i = num;    /* para concluir pesquisa (sair do for) */
-        }
-    }
-    return pos;
-}
 
 
 /*

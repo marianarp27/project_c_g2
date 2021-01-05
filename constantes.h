@@ -31,12 +31,12 @@ typedef struct{
 
 typedef struct{
     char designacao[MAX_AULAS];
-    char tipoAula;
+    char tipoDeAula;
     char docente[MAX_AULAS];
     tipoData data;
     float hora;
     char estadoAula;
-    char gavacao;
+    int gavacao;
     int codigo; //chave primaria UCs
 } tipoAula;
 

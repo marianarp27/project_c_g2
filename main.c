@@ -17,10 +17,10 @@ int main(){
 
     tipoUc vetorUc[MAX_UC];
     tipoAula *vAulas;   // Ponteiro (para vetor dinamico)
+    vAulas = NULL; // iniciar vetor dinamico a NULL
 
-    int numUc=0, numAula=0;
-    vAulas = NULL; // iniciar vetor dinamico
-    char opcao,opSubmenu, opSubmenu2;
+    int numUc=0, numAula=0, codigoUc;
+    char opcao,opSubmenu, opSubmenu2, designacao;
 
     vAulas = lerFicheiroBin(vAulas, &numAula); //carrega os elementos existentes para o vetor
 
@@ -39,7 +39,8 @@ int main(){
 
                 /* ----- AGENDAR AULA  ----- */
                     case 'A':   printf("Escolheu a opção de Agendar uma Aula");
-                        vAulas = acrescentaAula(vAulas, &numAula);
+                        codigoUc = lerInteiro("Indique codiogo Uc: ", 00, 99);
+                        vAulas = acrescentaAula(vAulas, &numAula, vetorUc, codigoUc);
 
                         break;
 
@@ -85,12 +86,9 @@ int main(){
         }
     }while(opcao!='F');
 
-    obtemDados(&info);
-    escreveDados(info);
-
     gravaFicheiroBin(vAulas,numAula); //grava os elementos antes de sair do programa
 
-    free(vetorAulas);  // Liberta memoria do vetor dinamico
+    free(vAulas);  // Liberta memoria do vetor dinamico
 
     return 0;
 }
