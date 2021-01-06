@@ -9,9 +9,8 @@ tipoAula *acrescentaAula(tipoAula vAula[], int *num, tipoUc vetorUc[],int numCod
 tipoAula *eliminaAula(tipoAula vAula[], int *num, char designacao[]);
 int procuraAulaNome(tipoAula vAula[], int num, char procAula[]);
 
-int procuraUc(tipoUc vetorUc[MAX_UC], int numUc, int codigoUC); //buscar o da MAria~!!!
-
-tipoAula *lerFicheiroBin(tipoAula vAulas[],int *num);
-tipoAula *gravaFicheiroBin(tipoAula vAulas[],int *num);
+void  gravaFicheiroBin(tipoAula vAulas[],int num);
+tipoAula *lerFicheiroBin(tipoAula vAula[],int *num);
+//tipoAula *gravaFicheiroBin(tipoAula vAula[],int *num);
 
 #endif // FUNCOES_AULAS_H_INCLUDED
