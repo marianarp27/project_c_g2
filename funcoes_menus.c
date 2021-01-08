@@ -22,7 +22,7 @@ char menu(tipoUc vetorUc[], int numUc){
     printf("\nQnt. aulas realizadas: **** ");
     printf("\tQnt. aulas gravadas: ****\n");
 
-    printf("\n U - Unidades Curriculares\n A - Aulas online\n R - Raking\n E - Estatística");
+    printf("\n U - Unidades Curriculares\n A - Aulas online\n R - Raking\n E - Estatística\n P - Procurar");
     printf("\n S - Salas de Aula online\n F - Fim/Sair\n\n Insira Opção ->");
     scanf("%c", &opcao);
     limpaBufferStdin();
@@ -47,7 +47,7 @@ char menu(){
 char menuAulas(){
     char opcao;
     printf("\n\n ----------------- Menu das Aulas Online -----------------");
-    printf("\n L - Listar Aulas\n A - Agendar Aula\n M - Modificar Aula\n E - Eliminar \n P - Procurar");
+    printf("\n L - Listar Aulas\n A - Agendar Aula\n M - Modificar Aula\n E - Eliminar");
     printf("\n V - Voltar\n\n Insira Opção ->");
     scanf(" %c", &opcao);
     limpaBufferStdin();

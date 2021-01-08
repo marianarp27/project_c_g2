@@ -48,6 +48,7 @@ tipoAula *acrescentaAula(tipoAula vAula[], int *num, tipoUc vetorUc[], int posUc
     }else{
 
         dados.codigo = vetorUc[posUc].codigo;
+        dados.tipoDeAula = vetorUc[posUc].tipo;
         dados.data = lerData();
 
         vAula = realloc(vAula, (*num+1)*sizeof(tipoAula));
