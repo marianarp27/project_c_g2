@@ -97,7 +97,7 @@ tipoAula *acrescentaAula(tipoAula vAula[], int *num, tipoUc vetorUc[], int posUc
                 quantHorasUc = (quantHorasUc*60); //passa horas para minutos
                 duracaoUcRest = quantHorasUc - duracaoUc; //faz a redução
                 duracaoUcRest = duracaoUcRest/60; //passa minutos para horas
-                printf("\n duracao restante: %d",duracaoUcRest);
+                printf("\n Numero de horas restante na UC %s: %d",vetorUc[posUc].designacao,duracaoUcRest);
 
             //}while(hora < 8 || hora > 18);
 
@@ -125,7 +125,7 @@ tipoAula *acrescentaAula(tipoAula vAula[], int *num, tipoUc vetorUc[], int posUc
                 quantHorasUc = (quantHorasUc*60); //passa horas para minutos
                 duracaoUcRest = quantHorasUc - duracaoUc; //faz a redução
                 duracaoUcRest = duracaoUcRest/60; //passa minutos para horas
-                printf("\n duracao restante de aulas: %d",duracaoUcRest);
+                printf("\n Numero de horas restante na UC %s: %d",vetorUc[posUc].designacao,duracaoUcRest);
 
             //}while(hora < 18 || hora > 24);
 
