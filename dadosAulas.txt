@@ -1,32 +1,16 @@
-Todas as Aulas: 1
+Lista Todas as Aulas: 1
 
-Designacao -> Aula Fisica
-Docente -> HUgo Brito
-Codigo UC -> 1245
-Data -> 8	12	2020
-Todas as Aulas: 1
+Designacao: Aula teste 1
+Docente: Hugo Brito
+Codigo UC: 1000
+Data: 5	2	2020
+Lista Todas as Aulas: 2
 
-Designacao -> Aula Fisica
-Docente -> HUgo Brito
-Codigo UC -> 1245
-Data -> 8	12	2020
-Todas as Aulas: 2
-
-Designacao -> Aula Fisica
-Docente -> HUgo Brito
-Codigo UC -> 1245
-Data -> 8	12	2020
-Designacao -> Aula Mat
-Docente -> Manuel Santos
-Codigo UC -> 1111
-Data -> 15	1	2021
-Todas as Aulas: 2
-
-Designacao -> Aula Fisica
-Docente -> HUgo Brito
-Codigo UC -> 1245
-Data -> 8	12	2020
-Designacao -> Aula Mat
-Docente -> Manuel Santos
-Codigo UC -> 1111
-Data -> 15	1	2021
+Designacao: Aula teste 1
+Docente: Hugo Brito
+Codigo UC: 1000
+Data: 5	2	2020
+Designacao: Aula teste 2
+Docente: Ana Rita
+Codigo UC: 1000
+Data: 12	2	2020

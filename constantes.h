@@ -1,44 +1,49 @@
 #ifndef contantes
 #define contantes
 
-#define MAX_ALUNOS 100
+#define MAX_ESTUDANTES 100
 #define MAX_UC 40
 #define MAX_STRING 100
-#define MAX_CODIGO 7
-#define MAX_AULAS 50
-#define HORAS_SEGUNDOS 0.60
 
 typedef struct{
     int dia, mes, ano;
 } tipoData;
 
+typedef struct{
+    int h, m;
+} tipoHora;
+
 
 typedef struct{
     int codigo;
     char designacao[MAX_STRING];
-    char tipo[MAX_STRING];
+    char tipoAula[MAX_STRING];
     int semestre;
     char regime[MAX_STRING];
-    float duracao;
+    int quantidadeAulas;
+    int duracao;
 } tipoUc;
 
 
 typedef struct{
-    int numero;
-    char nome[MAX_STRING];
-} tipoEstudante;
-
-
-typedef struct{
-    char designacao[MAX_AULAS];
-    char tipoDeAula;
-    char docente[MAX_AULAS];
+    char designacao[MAX_STRING];
+    char regimeAula[MAX_STRING];
+    char docente[MAX_STRING];
     tipoData data;
-    float hora;
-    char estadoAula;
+    tipoHora hora;
+    int horaFim;
+    int minFim;
+    char *estadoAula;
     int gavacao;
     int codigo; //chave primaria UCs
 } tipoAula;
+
+
+typedef struct{
+    int numeroEstudante;
+    char nome[MAX_STRING];
+    char regime[MAX_STRING];
+} tipoEstudante;
 
 
 
