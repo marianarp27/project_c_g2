@@ -9,6 +9,7 @@ typedef struct{
     int dia, mes, ano;
 } tipoData;
 
+
 typedef struct{
     int h, m;
 } tipoHora;
@@ -17,11 +18,16 @@ typedef struct{
 typedef struct{
     int codigo;
     char designacao[MAX_STRING];
+    char tipoDeUc[MAX_STRING];
     char tipoAula[MAX_STRING];
     int semestre;
     char regime[MAX_STRING];
-    int quantidadeAulas;
+    int quantidadeTotalHoras;
     int duracao;
+    int quantidadeAulas;
+    int quantidadeAulasAgendadas;
+    int quantidadeHoras;
+    int quantAulasRealizadas; //para fazer estatistica
 } tipoUc;
 
 
@@ -33,8 +39,9 @@ typedef struct{
     tipoHora hora;
     int horaFim;
     int minFim;
-    char *estadoAula;
-    int gavacao;
+    char estadoAula[MAX_STRING];
+    char gravacao[MAX_STRING];
+    int numAssecoGravacao;
     int codigo; //chave primaria UCs
 } tipoAula;
 
