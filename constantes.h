@@ -27,7 +27,7 @@ typedef struct{
     int quantidadeAulas;
     int quantidadeAulasAgendadas;
     int quantidadeHoras;
-    int quantAulasRealizadas; //para fazer estatistica
+    int quantAulasRealizadas;
 } tipoUc;
 
 

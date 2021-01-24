@@ -11,7 +11,7 @@ void mostrarDadosAula(tipoAula vAulas[], int numAula);
 void alteraAulas(tipoAula vAula[], int *numAulas, char designacaoAula[], tipoUc vetorUc[], int numTotalUc);
 void escreveDadosAulas(tipoAula vAulas[]);
 void calculaHora(int *horaF, int *minF);
-void pesquisaAula(tipoAula vAulas[], int num);
+void procuraAula(tipoAula vAulas[], int num);
 
 void listaAulasAgendadas(tipoAula vAulas[], int numAulas);
 void listaAulasDecorrer(tipoAula vAulas[], int numAulas);
@@ -19,8 +19,8 @@ void listaAulasRealizadas(tipoAula vAulas[], int numAulas);
 
 void lerQuantAulasAgendadas(int *quantidade, tipoAula vAulas[], int numAulas);
 void lerQuantAulasRealizadas(int *quantidade, tipoAula vAulas[], int numAulas);
+void lerQuantAulasGravadas(int *quantidade, tipoAula vAulas[], int numAulas);
 
-void quantidadeAulasOnline(tipoAula vAulas[], int numTotalAulas, tipoUc vetorUc[]);
 void comecarAula(tipoAula vAulas[], int numTotalAulas, char designacaoAula[], tipoUc vetorUc[], int numTotalUc);
 void terminarAula(tipoAula vAulas[], int numTotalAulas, char designacaoAula[]);
 
@@ -28,6 +28,5 @@ tipoAula *lerFicheiroBin(tipoAula vAulas[],int *num);
 void gravaFicheiroBin(tipoAula vAulas[],int num);
 void gravaFicheiroTextAula(tipoAula vAulas[],int num);
 tipoAula *lerFicheiroTextAula(tipoAula vAulas[],int *num);
-
 
 #endif // FUNCOES_AULAS_H_INCLUDED

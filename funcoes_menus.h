@@ -3,7 +3,7 @@
 
 #include "constantes.h"
 
-char menu(tipoUc vetorUc[], int numUc, int quantAulasAgendadas, int quantAulasRealizadas);
+char menu(int numTotalUc,int quantAulasAgendadas,int quantAulasRealizadas,int quantAulasGravadas);
 char menuAulas();
 char subMenuUc();
 char submenuAulas();

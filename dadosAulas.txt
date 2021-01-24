@@ -1,92 +1,156 @@
-Lista Todas as Aulas: 3
+Lista Todas as Aulas: 0
 
-Designacao: Aula Fisica 1
-Docente: Mario
+Lista Todas as Aulas: 2
+
+Designacao: teste 1
+Docente: raul
 Codigo UC: 1111
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: teste 2 algebra
+Docente: amelia
+Codigo UC: 1234
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Lista Todas as Aulas: 4
+
+Designacao: teste 1
+Docente: raul
+Codigo UC: 1111
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: teste 2 algebra
+Docente: amelia
+Codigo UC: 1234
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula teste 2
+Docente: manuel
+Codigo UC: 1111
+Data: 3	3	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula fisica 2
+Docente: manuel
+Codigo UC: 1111
+Data: 3	3	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Lista Todas as Aulas: 6
+
+Designacao: teste 1
+Docente: raul
+Codigo UC: 1111
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: teste 2 algebra
+Docente: amelia
+Codigo UC: 1234
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula teste 2
+Docente: manuel
+Codigo UC: 1111
+Data: 3	3	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula fisica 2
+Docente: manuel
+Codigo UC: 1111
+Data: 3	3	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula mat 1
+Docente: rui
+Codigo UC: 1122
 Data: 5	5	2020
 Hora de Inicio: 9:30
 Hora de Fim: 10:30
-
-Designacao: Aula Fisica 2
-Docente: Mario
-Codigo UC: 1111
-Data: 6	6	2020
+Designacao: aula mat 2
+Docente: rui
+Codigo UC: 1122
+Data: 3	3	2020
 Hora de Inicio: 10:30
 Hora de Fim: 11:30
+Lista Todas as Aulas: 6
 
-Designacao: Aula Algebra 1
-Docente: Amelia
-Codigo UC: 1234
-Data: 5	5	2020
-Hora de Inicio: 20:0
-Hora de Fim: 21:0
-
-Lista Todas as Aulas: 3
-
-Designacao: Aula Fisica 1
-Docente: Mario
+Designacao: teste 1
+Docente: raul
 Codigo UC: 1111
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: teste 2 algebra
+Docente: amelia
+Codigo UC: 1234
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula teste 2
+Docente: manuel
+Codigo UC: 1111
+Data: 3	3	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula fisica 2
+Docente: manuel
+Codigo UC: 1111
+Data: 3	3	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula mat 1
+Docente: rui
+Codigo UC: 1122
 Data: 5	5	2020
 Hora de Inicio: 9:30
 Hora de Fim: 10:30
-
-Designacao: Aula Fisica 2
-Docente: Mario
-Codigo UC: 1111
-Data: 6	6	2020
+Designacao: aula mat 2
+Docente: rui
+Codigo UC: 1122
+Data: 3	3	2020
 Hora de Inicio: 10:30
 Hora de Fim: 11:30
+Lista Todas as Aulas: 6
 
-Designacao: Aula Algebra 1
-Docente: Amelia
-Codigo UC: 1234
-Data: 5	5	2020
-Hora de Inicio: 20:0
-Hora de Fim: 21:0
-
-Lista Todas as Aulas: 3
-
-Designacao: Aula Fisica 1
-Docente: Mario
+Designacao: teste 1
+Docente: raul
 Codigo UC: 1111
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: teste 2 algebra
+Docente: amelia
+Codigo UC: 1234
+Data: 2	2	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula teste 2
+Docente: manuel
+Codigo UC: 1111
+Data: 3	3	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula fisica 2
+Docente: manuel
+Codigo UC: 1111
+Data: 3	3	2020
+Hora de Inicio: 9:30
+Hora de Fim: 10:30
+Designacao: aula mat 1
+Docente: rui
+Codigo UC: 1122
 Data: 5	5	2020
 Hora de Inicio: 9:30
 Hora de Fim: 10:30
-
-Designacao: Aula Fisica 2
-Docente: Mario
-Codigo UC: 1111
-Data: 6	6	2020
+Designacao: aula mat 2
+Docente: rui
+Codigo UC: 1122
+Data: 3	3	2020
 Hora de Inicio: 10:30
 Hora de Fim: 11:30
-
-Designacao: Aula Algebra 1
-Docente: Amelia
-Codigo UC: 1234
-Data: 5	5	2020
-Hora de Inicio: 20:0
-Hora de Fim: 21:0
-
-Lista Todas as Aulas: 3
-
-Designacao: Aula Fisica 1
-Docente: Mario
-Codigo UC: 1111
-Data: 5	5	2020
-Hora de Inicio: 9:30
-Hora de Fim: 10:30
-
-Designacao: Aula Fisica 2
-Docente: Mario
-Codigo UC: 1111
-Data: 6	6	2020
-Hora de Inicio: 10:30
-Hora de Fim: 11:30
-
-Designacao: Aula Algebra 1
-Docente: Amelia
-Codigo UC: 1234
-Data: 5	5	2020
-Hora de Inicio: 20:0
-Hora de Fim: 21:0
-
