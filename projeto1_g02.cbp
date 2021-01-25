@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="projeto1_g02-copia" />
+		<Option title="projeto1_g02" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -39,6 +39,10 @@
 		<Unit filename="funcoes_aulas.h">
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="funcoes_aulasAssistidas.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="funcoes_aulasAssistidas.h" />
 		<Unit filename="funcoes_auxiliares.c">
 			<Option compilerVar="CC" />
 		</Unit>

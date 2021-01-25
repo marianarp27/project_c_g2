@@ -26,11 +26,13 @@ tipoEstudante leDadosEstudante(int numeroEstudante){
     return vEstudante;
 }
 
+
 void escreveDadosEstudante(tipoEstudante vEstudante){
     printf("\n\tNumero de Estudante: %d", vEstudante.numeroEstudante);
     printf("\n\tNome: %s", vEstudante.nome);
     printf("\n\tRegime(D,PL): %s\n", vEstudante.regime);
 }
+
 
 
 void listaDadosEstudante(tipoEstudante vEstudante[MAX_ESTUDANTES], int numTotalEstudantes){
@@ -60,33 +62,11 @@ int procuraEstudante(tipoEstudante vEstudante[], int numTotalEstudantes, int num
     return posicao;
 }
 
-void listaAulasComGravacao(tipoAula vAulas[], int numAulas) {
-    int i;
-
-    for (i=0; i<numAulas; i++){
-        if ((strcmp(vAulas[i].estadoAula, "Realizada") == 0) && (strcmp(vAulas[i].gravacao, "S") == 0)){
-
-            printf("\n\tDescricao: %s\n",vAulas[i].designacao);
-            printf("\tDocente: %s\n",vAulas[i].docente);
-            printf("\tHora: %d:%d às",vAulas[i].hora.h,vAulas[i].hora.m);
-            printf(" %d:%d\n",vAulas[i].horaFim,vAulas[i].minFim);
-            printf("\tData: %d/%d/%d\n",vAulas[i].data.dia, vAulas[i].data.mes,vAulas[i].data.ano);
-            printf("\tEstado da Aula: %s\n",vAulas[i].estadoAula);
-            printf("\tGravacao: " );
-            if((strcmp(vAulas[i].gravacao, "S") == 0)){
-                printf("Sim");
-            }
-            printf("\n\n");
-
-            }
-    }
-}
-
 
 
 void gravarEstudantesTexto(tipoEstudante vEstudante[], int numTotalEstudante){
      FILE *ficheiro;
-        int i;
+        int i, erro;
 
         ficheiro=fopen("infoEstudante.txt", "a");
         if(ficheiro==NULL){
@@ -99,13 +79,17 @@ void gravarEstudantesTexto(tipoEstudante vEstudante[], int numTotalEstudante){
                 fprintf(ficheiro, "\nNome: %s", vEstudante[i].nome);
                 fprintf(ficheiro, "\nRegime: %s\n", vEstudante[i].regime);
             }
-            fclose(ficheiro);
+            erro = fclose(ficheiro);
+            if (erro != 0){
+                printf ("Erro %d ao fechar ficheiro", erro);
+            }
         }
 }
 
 
 void gravarEstudantesBinario(tipoEstudante vEstudante[], int numTotalEstudante){
      FILE *ficheiro;
+     int erro;
 
         ficheiro=fopen("infoEstudante.dat", "wb");
         if(ficheiro==NULL){
@@ -113,31 +97,39 @@ void gravarEstudantesBinario(tipoEstudante vEstudante[], int numTotalEstudante){
         } else{
             fwrite(&numTotalEstudante,sizeof(int),1,ficheiro);
             fwrite(vEstudante,sizeof(tipoEstudante),numTotalEstudante,ficheiro);
-            fclose(ficheiro);
+
+            erro = fclose(ficheiro);
+            if (erro != 0){
+                printf ("Erro %d ao fechar ficheiro", erro);
+            }
         }
 }
 
 void leEstudantesTexto(tipoEstudante vEstudante[], int *numTotalEstudante){
     FILE *ficheiro;
-    int i;
+    int i, erro;
 
-        ficheiro=fopen("infoEstudante.txt", "r");
-        if(ficheiro==NULL){
-            printf("\tErro ao abrir o ficheiro. \n");
-        } else{
-            for(i=0; i<*numTotalEstudante; i++){
-                fscanf(ficheiro, "%d", vEstudante[i].numeroEstudante);
-                fgets(vEstudante[i].nome,100,ficheiro);
-                fgets(vEstudante[i].regime,3,ficheiro);
-            }
-            fclose(ficheiro);
+    ficheiro=fopen("infoEstudante.txt", "r");
+    if(ficheiro==NULL){
+        printf("\tErro ao abrir o ficheiro. \n");
+    } else{
+        for(i=0; i<*numTotalEstudante; i++){
+            fscanf(ficheiro, "%d", vEstudante[i].numeroEstudante);
+            fgets(vEstudante[i].nome,100,ficheiro);
+            fgets(vEstudante[i].regime,3,ficheiro);
         }
+        erro = fclose(ficheiro);
+        if (erro != 0){
+            printf ("Erro %d ao fechar ficheiro", erro);
+        }
+    }
 }
 
 
 
 void leEstudantesBinario(tipoEstudante vEstudante[], int *numTotalEstudante){
     FILE *ficheiro;
+    int erro;
 
         ficheiro=fopen("infoEstudante.dat", "rb");
         if(ficheiro==NULL){
@@ -146,7 +138,10 @@ void leEstudantesBinario(tipoEstudante vEstudante[], int *numTotalEstudante){
             fread(&(*numTotalEstudante),sizeof(int),1,ficheiro);
             fread(vEstudante,sizeof(tipoEstudante),*numTotalEstudante,ficheiro);
 
-            fclose(ficheiro);
+            erro = fclose(ficheiro);
+            if (erro != 0){
+                printf ("Erro %d ao fechar ficheiro", erro);
+            }
         }
 }
 
@@ -213,150 +208,37 @@ void alterarVetorEstudante(tipoEstudante vEstudante[], int numTotalEstudantes){
 
 void eliminarEstudante(tipoEstudante vEstudante[], int *numTotalEstudantes){
     int posicao, numeroEstudante;
+    char eliminacao;
 
     if(*numTotalEstudantes == 0 ){
         printf("\tNão existem Unidades Curriculares. \n");
-    }
-    else{
+    } else{
         numeroEstudante=lerInteiro("\tNumero de Estudante: ",1000,2000);
         posicao=procuraEstudante(vEstudante,*numTotalEstudantes, numeroEstudante);
+
         if(posicao==-1){
             printf("\tA Unidade Curricular não existe. \n");
         } else {
-            vEstudante[posicao]=vEstudante[posicao+1];
-        }
+            do{
+                printf("Tem a certeza que quer eliminar o estudante %s, com o numero %d'?(S-Sim, N-Nao): ", vEstudante[posicao].nome, vEstudante[posicao].numeroEstudante);
+                scanf("%c", &eliminacao);
+                limpaBufferStdin();
+                eliminacao = toupper(eliminacao);
 
-        (*numTotalEstudantes)--;
-        printf("\n\tO estudante foi eliminada");
-    }
-}
-
-
-
-void gravaAulasEstudantesBin(tipoEstudante vEstudante[], int numTotalEstudantes, tipoAula vAula[], int numTotalAulas){
- FILE *ficheiro;
-
-        ficheiro=fopen("infoAulasEstudante.dat", "wb");
-        if(ficheiro==NULL){
-            printf("\tErro ao abrir o ficheiro. \n");
-        } else{
-            fwrite(&numTotalEstudantes,sizeof(int),1,ficheiro);
-            fwrite(vEstudante,sizeof(tipoEstudante),numTotalEstudantes,ficheiro);
-
-            fwrite(&numTotalAulas,sizeof(int),1,ficheiro);
-            fwrite(vAula,sizeof(tipoAula),numTotalAulas,ficheiro);
-            fclose(ficheiro);
-        }
-}
-
-
-void leAulasEstudantesBin(tipoEstudante vEstudante[], int *numTotalEstudantes, tipoAula vAula[], int *numTotalAulas){
- FILE *ficheiro;
-
-    ficheiro=fopen("infoAulasEstudante.dat", "rb");
-    if(ficheiro==NULL){
-        printf("\tErro ao abrir o ficheiro. \n");
-    } else{
-        fread(&(*numTotalEstudantes),sizeof(int),1,ficheiro);
-        fread(vEstudante,sizeof(tipoEstudante),*numTotalEstudantes,ficheiro);
-
-        fread(&(*numTotalAulas),sizeof(int),1,ficheiro);
-        fread(vAula,sizeof(tipoEstudante),*numTotalAulas,ficheiro);
-
-        fclose(ficheiro);
-    }
-}
-
-
-void gravaAulasEstudantesTxt(tipoEstudante vEstudante[], int numTotalEstudantes, int numEstudante, tipoAula vAula[], int numTotalAulas, int posicaoAula){
-        FILE *ficheiro;
-        int i,j;
-
-        ficheiro=fopen("infoAulasEstudante.txt", "a+");
-        if(ficheiro==NULL){
-            printf("\tErro ao abrir o ficheiro. \n");
-        } else{
-
-                fprintf(ficheiro, "Nome estudante: %d\n", vEstudante[numEstudante].numeroEstudante);
-                fprintf(ficheiro, "Numero: %s\n\n", vEstudante[numEstudante].nome);
-
-
-
-                  //  fprintf(ficheiro,"Designacao %s", vAula[posicaoAula].designacao);
-                    fprintf(ficheiro,"Data: %d\t",vAula[posicaoAula].data.dia);
-                    fprintf(ficheiro,"%d\t",vAula[posicaoAula].data.mes);
-                    fprintf(ficheiro,"%d\n",vAula[posicaoAula].data.ano);
-                    fprintf(ficheiro,"Hora de Inicio: %d:%d\n",vAula[posicaoAula].hora.h,vAula[posicaoAula].hora.m);
-                    fprintf(ficheiro,"Hora de Fim: %d:%d\n\n",vAula[posicaoAula].horaFim,vAula[posicaoAula].minFim);
-
-
-            fclose(ficheiro);
-            }
-
-}
-
-
-
-
-
-void assistirAula(tipoEstudante vEstudante[], int numTotalEstudantes, tipoAula vAulas[], int numTotalAulas, char designacaoAula[]){
-   int posicaoAula, posicaoEstudante, numeroEstudante;
-
-    if(numTotalAulas == 0 ){
-        printf("Não existem Aulas. \n");
-    } else {
-        posicaoAula=procuraAulaNome(vAulas, numTotalAulas, designacaoAula);
-        if(posicaoAula == -1){
-            printf ("A designação da aula não existe");
-        } else {
-            if(strcmp(vAulas[posicaoAula].estadoAula, "A decorrer")==0){
-                numeroEstudante=lerInteiro("\tNumero de Estudante: ",1000,2000);
-
-                posicaoEstudante = procuraEstudante(vEstudante, numTotalEstudantes, numeroEstudante);
-
-                if(posicaoEstudante == -1){
-                    printf ("O numero de estudante inserido não existe");
-
-                } else {
-                    printf ("Está a assitir à aula de %s", designacaoAula);
+                if(eliminacao!='S' && eliminacao!='N' ){
+                    printf("Inseriu uma opcao invalida.\n");
                 }
-            } else{
-                printf("A aula não esta a decorrer");
-            }
-        }
-           gravaAulasEstudantesTxt(vEstudante, numTotalEstudantes, posicaoEstudante, vAulas, numTotalAulas, posicaoAula);
-    }
-}
 
-void assistirGravacaoAula(tipoEstudante vEstudante[], int numTotalEstudantes, tipoAula vAulas[], int numTotalAulas, char designacaoAula[]){
-   int posicaoAula, posicaoEstudante, numeroEstudante;
+            }while (eliminacao!='S' && eliminacao!='N');
 
-    if(numTotalAulas == 0 ){
-        printf("Não existem Aulas. \n");
-    } else {
-        posicaoAula=procuraAulaNome(vAulas, numTotalAulas, designacaoAula);
-        if(posicaoAula == -1){
-            printf ("A designação da aula não existe");
-        } else {
-           if( (strcmp(vAulas[posicaoAula].estadoAula, "Terminada")==0) ){
-               if (strcmp(vAulas[posicaoAula].gravacao,"Sim") == 0) {
-                    numeroEstudante=lerInteiro("\tNumero de Estudante: ",1000,2000);
-                    posicaoEstudante = procuraEstudante(vEstudante, numTotalEstudantes, numeroEstudante);
+            if(eliminacao == 'S'){
+                vEstudante[posicao]=vEstudante[posicao+1];
 
-                    if(posicaoEstudante == -1){
-                        printf ("O numero de estudante inserido não existe");
-
-                    } else {
-                        printf ("Está a assitir à gravação da aula de %s", designacaoAula);
-                        gravaAulasEstudantesTxt(vEstudante, numTotalEstudantes, posicaoEstudante, vAulas, numTotalAulas, posicaoAula);
-                    }
-                } else{
-                    printf("A aula não foi gravada");
-                }
+                (*numTotalEstudantes)--;
+                 printf("\n\tO estudante foi eliminada, com o numero. \n");
             } else {
-                printf("A aula não esta terminada");
+                printf("\n\tO estudante não %s foi eliminada, com o numero %d. \n", vEstudante[posicao].nome, vEstudante[posicao].numeroEstudante);
             }
         }
     }
 }
-

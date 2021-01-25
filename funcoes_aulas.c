@@ -5,20 +5,20 @@
 #include <locale.h>
 
 #include "constantes.h"
+#include "funcoes_aulasAssistidas.h"
 #include "funcoes_auxiliares.h"
-#include "funcoes_uc.h"
+#include "funcoes_estatistica.h"
 #include "funcoes_estudantes.h"
 #include "funcoes_menus.h"
+#include "funcoes_uc.h"
 
 
 tipoAula lerDadosAula(){
     tipoAula aula;
 
     lerString("Indique Descricao: ", aula.designacao, MAX_STRING);
-
     lerString("Docente: ", aula.docente, MAX_STRING);
 
-    //campo tipo contador - tem a haver com a funcionalidade do programa
     aula.codigo = 0;
     return aula;
 }
@@ -31,281 +31,201 @@ int procuraAulaNome(tipoAula vAula[], int num, char procAula[]){
     for (i=0; i<num; i++){
         if (strcmp(vAula[i].designacao, procAula) == 0){  // Elemento encontrado
             pos = i;       // guarda posição de numero em vAula
-            i = num;    // para concluir pesquisa (sair do for)
+            i = num;       // para concluir pesquisa (sair do for)
         }
     }
     return pos;
 }
 
-void procuraAula(tipoAula vAulas[], int num){
-    int posAula;
+
+void pesquisaAula(tipoAula vAulas[], tipoAulasAssistidas vAulasAssistidas[], int num, int numAulasAssistidas, tipoUc vetorUc[], int numTotalUc){
+    int posAula, codigoUc, posUc;
     char designacao[20];
+    int contadorAulas = 0, contadorGravacoes = 0;
 
     lerString("Designacao da Aula a procurar: ", designacao, MAX_STRING);
     posAula = procuraAulaNome(vAulas,num,designacao);
 
+    codigoUc = vAulas[posAula].codigo;
+    posUc = procuraUc(vetorUc, numTotalUc, codigoUc);
+
     if(posAula == -1){
-        printf("Aula inserida não existe");
+        printf("A Designação inserida não foi encontrada.");
     }
     else{
-        //apresnetar os dados da aula selecionada
-        printf("\n\tDescricao: %s\n",vAulas[posAula].designacao);
+        // apresenta os dados da aula inserida
+        printf("\n\tDescrição da UC: %s\n",vetorUc[posUc].designacao);
+        printf("\tRegime: ");
+        if( (strcmp(vetorUc[posUc].regime, "D")==0) ){
+            printf("Diurno\n");
+        } else {
+            printf("Pós-Laboral\n");
+        }
+
+        printf("\n\tDescrição da Aula: %s\n",vAulas[posAula].designacao);
         printf("\tDocente: %s\n",vAulas[posAula].docente);
         printf("\tHora de inicio: %d:%d\n",vAulas[posAula].hora.h,vAulas[posAula].hora.m);
         printf("\tHora de Fim: %d:%d\n",vAulas[posAula].horaFim,vAulas[posAula].minFim);
-        printf("\tRegime: %s\n",vAulas[posAula].regimeAula);
         printf("\tData: %d/%d/%d\n",vAulas[posAula].data.dia,vAulas[posAula].data.mes,vAulas[posAula].data.ano);
-        printf("\tEstado da Aula: %s\n\n",vAulas[posAula].estadoAula);
+        printf("\tEstado da Aula: %s\n",vAulas[posAula].estadoAula);
 
         if((strcmp(vAulas[posAula].gravacao, "A") != 0) ){
             printf("\tGravacao: " );
-            if((strcmp(vAulas[posAula].gravacao, "S") == 0)){
-                printf("Sim");
+            if( (strcmp(vAulas[posAula].gravacao, "S") == 0) ){
+                printf("Sim\n");
             } else {
-                printf("Nao");
+                printf("Nao\n");
             }
         }
 
-       if(strcmp(vAulas[posAula].estadoAula, "Agendada") == 0){
-            printf("\tAula com estado Agendada. Sem informação adicional.\n");
+
+        if( (strcmp(vAulas[posAula].estadoAula, "Realizada") == 0)){
+            printf("\n\tDados dos alunos que assistiram a aula:\n");
+            procuraAulaAssistidaAula(vAulasAssistidas, numAulasAssistidas, designacao, &contadorAulas);
+            printf("\t\tNumero de alunos: %d\n", contadorAulas);
+
+            printf("\n\n\tDados dos alunos que assistiram a gravacao:\n");
+            procuraAulaAssistidaGravacao(vAulasAssistidas, numAulasAssistidas, designacao, &contadorAulas);
+            printf("\t\tNumero de alunos: %d", contadorGravacoes);
+        } else {
+            if(strcmp(vAulas[posAula].estadoAula, "A decorrer") == 0){
+                printf("\n\tDados dos alunos que estão a assistir a aula:\n");
+                procuraAulaAssistidaAula(vAulasAssistidas, numAulasAssistidas, designacao, &contadorAulas);
+                printf("\t\tNumero de alunos: %d\n", contadorAulas);
+            }
+        }
+        if(strcmp(vAulas[posAula].estadoAula, "Agendada") == 0){
+            printf("\n\tAula com estado Agendada. Sem informação adicional.\n");
 
         }
-        else if(strcmp(vAulas[posAula].estadoAula, "A Realizar") == 0){
-            printf("\tAula a Decorrer.\n");
-        }
-        else{
-            printf("\nEntrou no else");
-            //mostrar a quant de estudantes presentes nessa aula
-            //mostrar quant acesso houve ás gravacoes
-        }
-
     }
-
 }
 
 void calculaHora( int *horaF, int *minF){
     int min_hora = 60;
-    *horaF=*minF/min_hora; //calcula hora
-    *minF=(*minF-(min_hora*(*horaF))); //calcula minutos
+    *horaF=*minF/min_hora;              // calcula a hora
+    *minF=(*minF-(min_hora*(*horaF)));  //calcula os minutos
+}
+
+
+
+int procuraHora(tipoAula vAula[], int numTotalAulas, int codigoUC, int ano, int mes, int dia, int hora, int minuto){
+    int i, posicao;
+    posicao = -1;
+
+    for (i=0; i<numTotalAulas; i++){
+        if(codigoUC == vAula[i].codigo) {
+            if (ano == vAula[i].data.ano && mes== vAula[i].data.mes && dia== vAula[i].data.dia){
+
+                if( (hora < vAula[i].hora.h || hora > vAula[i].horaFim) ||  (hora < vAula[i].hora.h && hora > vAula[i].horaFim)){
+                    if(minuto < vAula[i].hora.m || minuto > vAula[i].minFim){
+                        posicao = i;
+                        i = numTotalAulas; // Quando se encontra o codigoUc iguala-se o i=numTotalUc (sair do for)
+                    }
+                }
+            }
+        }
+    }
+    return posicao;
 }
 
 
 tipoAula *acrescentaAula(tipoAula vAula[], int *num, tipoUc vetorUc[], int posUc){
-
     tipoAula *pAula, dados;
-    int posAula, hora, min, horaTotal, duracaoUc=0, horaF=0, minF, quantHorasUc=0, duracaoUcRest=0, i, horaTotalvetor=0, numAgendas=0;
+    int posAula, hora, min, horaTotal, duracaoUc=0, horaF=0, minF, quantHorasUc=0, duracaoUcRest=0, posHora;
+    int codigoUC, caclHoraTotal=0;
     char regimeUc[3];
-    int dataInserida,dataVetor,contaA=0,codigoUC,encontrou;
     pAula = vAula;
 
     strcpy(regimeUc,vetorUc[posUc].regime);
-    strupr(regimeUc); //por string em maiuscula
+    strupr(regimeUc); // coloca string em maiúscula
 
     duracaoUc = vetorUc[posUc].duracao;
     quantHorasUc = vetorUc[posUc].quantidadeHoras;
+    codigoUC = vetorUc[posUc].codigo;
 
     dados = lerDadosAula();
     posAula = procuraAulaNome(vAula,*num,dados.designacao);
 
 
     if(posAula != -1){
-        printf("Nome de Aula ja existente\n");
+        printf("A Designação inserida não foi encontrada.\n");
     }
     else{
         dados.codigo = vetorUc[posUc].codigo;
         strcpy(dados.regimeAula,regimeUc);
         dados.data = lerData();
 
-        //dataInserida = (dados.data.ano*10000)+(dados.data.mes*100)+dados.data.dia;
-
-
-        //calcula a hora inicio/fim consoante o regime e o tipo de aula
+        // calcula a hora inicio/fim consoante o regime e o tipo de aula
         if(strcmp(regimeUc, "D") == 0){
 
-
-    /*        numAgendas = vetorUc[posUc].quantidadeAulasAgendadas;
-            codigoUC = vetorUc[posUc].codigo;
-
-            printf("\n\tQuantas aulas agendada tem a UC -> confirmacao: %d\n",numAgendas); //confimacao
-            printf("\n\tCodigo UC -> confirmacao: %d\n",vetorUc[posUc].codigo); //confimacao
-
-
-            if(numAgendas == 0){
-                // se não houver ainda aulas agendadas
-
-                printf("\n -- Aula - else - sem agendadas hora -- \n"); //confimacao
-
-                dados.hora = lerHora(8,18);
-                hora = dados.hora.h;
-                min = dados.hora.m;
-                printf("\n Inicio da Aula: %d:%d",hora,min);
-
-                horaTotal = (hora*60) + min; //soma a hora em mimutis com os minutos
-
-            }else{
-
-                for (i=0; i<*num; i++){
-
-                    if (codigoUC == vAula[i].codigo){
-
-                        printf("\n ---- Entrou no FOR ----- "); //confimacao
-                        printf("\nConfirmar -- Codigo UC aula: %d",vAula[i].codigo); //confimacao
-                        printf(" -- Descricao: %s\n",vAula[i].designacao);  //confimacao
-
-                        contaA ++; //confirma a quantidade de aulas existentes
-
-                        dataVetor = (vAula[i].data.ano*10000)+(vAula[i].data.mes*100)+vAula[i].data.dia;
-
-                        if(dataInserida != dataVetor){
-
-                            printf("\n ** Aula > data diferente **\n\n"); //confimacao
-
-                            dados.hora = lerHora(8,18);
-                            hora = dados.hora.h;
-                            min = dados.hora.m;
-
-                            horaTotal = (hora*60) + min;
-
-                            i = *num; // para concluir pesquisa (sair do for)
-
-                        }
-                        else{
-
-                            printf("\n *** Aula > data inserida igual ***\n\n"); //confimacao
-
-                            horaTotalvetor = (vAula[i].hora.h*60) + vAula[i].hora.m;
-
-                            do{
-                                dados.hora = lerHora(8,18);
-
-                                hora = dados.hora.h;
-                                min = dados.hora.m;
-                                printf("\n -- suposta hora -> %d:%d\n",hora,min); //confimacao
-
-                                horaTotal = (hora*60) + min;
-
-                                printf("\n -- hora inserida em min: %d\n",horaTotal); //confimacao
-                                printf(" -- hora vetor em mim: %d\n",horaTotalvetor); //confimacao
-
-
-                                if (horaTotal == horaTotalvetor){
-                                    printf("\n Ja se encontra uma aula com a hora inserida!\n");
-                                    printf(" Insira novamente:\n");
-                                }
-
-                                printf("\n -- hora vetor em mim continua igula - confere -> %d\n",horaTotalvetor); //confimacao
-
-                            }while(horaTotal == horaTotalvetor);
-
-                            i = *num; // para concluir pesquisa (sair do for)
-
-                        }
-
-                    }
-
-                    printf("\n\tQuantas aulas ha/leu nesta UC -> confere: %d\n",contaA); //confimacao
-
-                } //end For
-
-
-
-            }
-
-            printf("\n --- Sai0 do FOR --- \n");  //confimacao
-
-
-            printf("\n -- FIMMMM ---  Inicio que ficou: %d:%d",hora,min);
-
-    */
-            // --------
-
             printf("Insira as Horas:\n");
-            dados.hora = lerHora(8,18);
+            dados.hora = lerHora(8,17);
             hora = dados.hora.h;
             min = dados.hora.m;
-            //printf("\n Inicio da Aula: %d:%d",hora,min);
 
-            horaTotal = (hora*60) + min;
-
-            // --------
-
-            printf("\n Inicio da Aula: %d:%d",hora,min);
-            //hora = (hora*60);  //coloca hora inicio em minutos
-            //horaTotal = hora + min;  //soma a hora em mimutis com os minutos
-
-            //calculação da hora de Fim
-            horaTotal = horaTotal + duracaoUc;
-
-            minF = horaTotal;
-            calculaHora(&horaF,&minF); //funcao calcula hora de FIM
-            printf("\n Fim da Aula: %d:%d\n\n",horaF,minF);
-
-
-            dados.horaFim = horaF;
-            dados.minFim = minF;
-
-            quantHorasUc = (quantHorasUc*60); //passa horas para minutos
-            duracaoUcRest = quantHorasUc - duracaoUc; //faz a redução
-            duracaoUcRest = duracaoUcRest/60; //passa minutos para horas
-            printf("\n Numero de horas restante na UC %s: %d",vetorUc[posUc].designacao,duracaoUcRest);
+            caclHoraTotal = (hora*60) + min; //soma a hora em minutos com os minutos
 
         }
-        else{
+        else{ // se for do regime pós-laboral
+
             printf("Insira as Horas:\n");
             dados.hora = lerHora(18,24);
             hora = dados.hora.h;
             min = dados.hora.m;
-            printf("\n Inicio da Aula: %d:%d",hora,min);
 
-            horaTotal = (hora*60) + min;
-
-            //calculação da hora de Fim
-            horaTotal = horaTotal + duracaoUc;
-            minF = horaTotal;
-            calculaHora(&horaF,&minF); //funcao calcula hora de FIM
-            printf("\n Fim da Aula: %d:%d",horaF,minF);
-
-            dados.horaFim = horaF;
-            dados.minFim = minF;
-
-            quantHorasUc = (quantHorasUc*60); //passa horas para minutos
-            duracaoUcRest = quantHorasUc - duracaoUc; //faz a redução
-            duracaoUcRest = duracaoUcRest/60; //passa minutos para horas
-            printf("\n Numero de horas restante na UC %s: %d",vetorUc[posUc].designacao,duracaoUcRest);
+            caclHoraTotal = (hora*60) + min; // soma a hora em minutos com os minutos
         }
 
+        // calcula hora de FIM
+        horaTotal = caclHoraTotal + duracaoUc;
+        minF = horaTotal;
+        calculaHora(&horaF,&minF);
+        dados.horaFim = horaF;
+        dados.minFim = minF;
 
+        // verifica se data/hora já existe
+        posHora= procuraHora(vAula, *num, codigoUC, dados.data.ano, dados.data.mes, dados.data.dia, dados.hora.h, dados.hora.m );
 
-        strcpy(dados.estadoAula, "Agendada");
-        strcpy(dados.gravacao, "A");
+        if(posHora != -1){
+            printf("\n\nNão foi possível marcar uma aula para esta hora, pois já há existe uma com a mesma hora.");
+        }
+        else{
+            printf("\n Inicio da Aula: %d:%d",hora,min);
+            printf("\n Fim da Aula: %d:%d\n\n",horaF,minF);
 
-        vAula = realloc(vAula, (*num+1)*sizeof(tipoAula));
+            quantHorasUc = (quantHorasUc*60); // passa horas para minutos
+            duracaoUcRest = quantHorasUc - duracaoUc; // faz a redução
+            duracaoUcRest = duracaoUcRest/60; // passa minutos para horas
+            printf("\n Numero de horas restante na UC %s: %d",vetorUc[posUc].designacao,duracaoUcRest);
 
-        if(vAula == NULL){
-            printf("ERRO - impossivel inserir aula");
-            vAula = pAula;
-        }else
-        {
-            vAula[*num] = dados;
-            (*num)++;
+            strcpy(dados.estadoAula, "Agendada");
+            strcpy(dados.gravacao, "A");
 
-            //actualiza a quantidade de aulas no vetor da UC e a quantidade de aulas
-            vetorUc[posUc].quantidadeHoras = duracaoUcRest;
-            vetorUc[posUc].quantidadeAulasAgendadas = vetorUc[posUc].quantidadeAulasAgendadas + 1;
+            vAula = realloc(vAula, (*num+1)*sizeof(tipoAula));
 
-            printf("\n\nAula agendada com sucesso!\n");
+            if(vAula == NULL){
+                printf("ERRO - impossivel inserir aula");
+                vAula = pAula;
+            }
+            else{
+                vAula[*num] = dados;
+                (*num)++;
 
+                // atualiza a quantidade de aulas no vetor da UC e a acrescenta +1 à quantidade de aulas agendadas
+                vetorUc[posUc].quantidadeHoras = duracaoUcRest;
+                vetorUc[posUc].quantidadeAulasAgendadas = vetorUc[posUc].quantidadeAulasAgendadas + 1;
+
+                printf("\n\nAula agendada com sucesso!\n");
+            }
         }
 
     }
-
     return vAula;
 }
 
+
 void escreveDadosAulas(tipoAula vAulas){
-
-    printf("\n\tCodigo UC: %d\n",vAulas.codigo);
-
     printf("\n\tDescricao: %s\n",vAulas.designacao);
     printf("\tDocente: %s\n",vAulas.docente);
     printf("\tHora: %d:%d as",vAulas.hora.h,vAulas.hora.m);
@@ -322,18 +242,16 @@ void escreveDadosAulas(tipoAula vAulas){
         }
     }
     printf("\n");
-
 }
-
-
 
 void mostrarDadosAula(tipoAula vAulas[], int numAulas) {
     int i;
     if (numAulas == 0) {
-        printf("\nSem dados! Não existem Aulas\n");
+        printf("\nNão existem dados referentes às Aulas Online.\n");
     }
     else{
-        printf("\nListagem de todas as Aulas:\n");
+        printf("\n\tListagem de todas as Aulas:\n\n");
+
         for(i=0; i<numAulas; i++) {
             escreveDadosAulas(vAulas[i]);
         }
@@ -349,8 +267,6 @@ void lerQuantAulasAgendadas(int *quantidade, tipoAula vAulas[], int numAulas){
         }
     }
     *quantidade = conta;
-
-
 }
 
 void lerQuantAulasRealizadas(int *quantidade, tipoAula vAulas[], int numAulas){
@@ -377,30 +293,30 @@ void lerQuantAulasGravadas(int *quantidade, tipoAula vAulas[], int numAulas){
 
 
 void listaAulasAgendadas(tipoAula vAulas[], int numAulas) {
-    int i, conta=0;
+    int i,conta=0;
 
     if(numAulas == 0){
-        printf("Não existem Aulas.\n");
-    }else{
+        printf("Não existem dados referentes às Aulas Online.\n");
+     }else{
         for (i=0; i<numAulas; i++){
             if (strcmp(vAulas[i].estadoAula, "Agendada") == 0){
                 escreveDadosAulas(vAulas[i]);
                 conta++;
             }
         }
-
         if (conta == 0){
-            printf("Não existem Aulas a Agendadas\n");
+            printf("De momento não existem aulas a agendadas.\n");
         }
     }
 }
 
+
 void listaAulasDecorrer(tipoAula vAulas[], int numAulas) {
-    int i,conta=0;
+    int i, conta=0;
 
     if(numAulas == 0){
-        printf("Não existem Aulas.\n");
-    }else{
+        printf("Não existem dados referentes às Aulas Online.\n");
+     }else{
 
         for (i=0; i<numAulas; i++){
             if (strcmp(vAulas[i].estadoAula, "A decorrer") == 0){
@@ -408,45 +324,43 @@ void listaAulasDecorrer(tipoAula vAulas[], int numAulas) {
                 conta++;
             }
         }
-
         if (conta == 0){
-            printf("Não existem Aulas a Agendadas\n");
+            printf("De momento não existem aulas a decorrer.\n");
         }
     }
 }
 
 void listaAulasRealizadas(tipoAula vAulas[], int numAulas) {
-    int i;
+    int i,conta=0;
 
     if(numAulas == 0){
-        printf("Não existem Aulas.\n");
+        printf("Não existem dados referentes às Aulas Online.\n");
     }else{
         for (i=0; i<numAulas; i++){
             if (strcmp(vAulas[i].estadoAula, "Realizada") == 0){
                 escreveDadosAulas(vAulas[i]);
-            }else{
-                printf("Não existem Aulas Realizadas\n");
+                conta++;
             }
+        }
+        if (conta == 0){
+            printf("De momento não existem aulas a realizadas.\n");
         }
     }
 }
 
 
-
-
-// só dá se a aula estiver com estado 'agendada'
 tipoAula *eliminaAula(tipoAula vAula[], int *num, char designacao[], tipoUc vetorUc[], int numTotalUc){
     int i, posAula, codigoUc, posicaoUcVetor, duracaoUc, quantHorasUc;
-    char estAula[12];
+    char estAula[12], eliminacao;
     tipoAula *pAula;
-    pAula = vAula; // ponteiro auxiliar
+    pAula = vAula;
 
     if(*num != 0){
 
         posAula = procuraAulaNome(vAula, *num, designacao);
         strcpy(estAula,vAula[posAula].estadoAula);
 
-        //buscar UC para actualizar a quantidade de Horas
+        //vai buscar valores da UC para atualizar a quantidade de horas
         codigoUc = vAula[posAula].codigo;
         posicaoUcVetor = procuraUc(vetorUc, numTotalUc, codigoUc);
         duracaoUc = vetorUc[posicaoUcVetor].duracao;
@@ -454,44 +368,61 @@ tipoAula *eliminaAula(tipoAula vAula[], int *num, char designacao[], tipoUc veto
 
 
         if(posAula == -1){
-            printf ("Aula nao existe!");
+            printf ("A Designação inserida não foi encontrada.");
         }
         else{
-            if(strcmp(estAula, "Agendada") == 0){
+            if(strcmp(estAula, "Agendada") == 0 ){
+                do{
+                    printf("\nTem a certeza que quer eliminar a aula %s'?(S-Sim, N-Nao): ", vAula[posAula].designacao);
+                    scanf("%c", &eliminacao);
+                    limpaBufferStdin();
+                    eliminacao = toupper(eliminacao);
 
-                for(i=posAula; i<*num-1; i++){
-                    vAula[i] = vAula[i+1];
+                    if(eliminacao!='S' && eliminacao!='N' ){
+                        printf("Inseriu uma opcao invalida.\n");
+                    }
+
+                }while (eliminacao!='S' && eliminacao!='N');
+
+                if(eliminacao == 'S'){
+
+                    for(i=posAula; i<*num-1; i++){
+                        vAula[i] = vAula[i+1];
+                    }
+
+                    vAula = realloc(vAula,(*num-1)*sizeof(tipoAula));
+
+                    if(vAula == NULL && (*num-1) != 0){
+                        printf ("Erro na alocacao de memoria");
+                        vAula = pAula;
+                    }
+                    (*num)--; // Atualiza numero aulas
+                    printf (" Aula eliminada!\n\n");
+
+                    quantHorasUc = (quantHorasUc*60); //passa horas para minutos
+                    quantHorasUc += duracaoUc; //faz a redução
+                    quantHorasUc = quantHorasUc/60; //passa minutos para horas
+                    vetorUc[posicaoUcVetor].quantidadeHoras = quantHorasUc;
+
+                    printf("\n\tA Aula %s foi eliminada. \n", vAula[posAula].designacao);
+                }else {
+                    printf("\n\tA Aula não foi eliminada. \n");
                 }
-
-                vAula = realloc(vAula,(*num-1)*sizeof(tipoAula));
-
-                if(vAula == NULL && (*num-1) != 0){
-                    printf ("Erro na alocacao de memoria");
-                    vAula = pAula;   // restaura valor de vAula
-                }
-                (*num)--; // Atualiza numero aulas retirando uma
-                printf (" Aula eliminada!\n\n");
-
-                quantHorasUc = (quantHorasUc*60); //passa horas para minutos
-                quantHorasUc += duracaoUc; //faz a redução
-                quantHorasUc = quantHorasUc/60; //passa minutos para horas
-                vetorUc[posicaoUcVetor].quantidadeHoras = quantHorasUc;
-            }
-            else{
-                printf ("\nImpossivel Remover! Aula a decorrer ou nao pode ser eliminada \n");
+            }else{
+                printf ("\nImpossível  Remover! A aula de %s, está a decorrer ou já foi realizada, por isso não pode ser eliminada \n", vAula[posAula].designacao);
             }
         }
+        return vAula;
     }
-    return vAula;
 }
 
 
 void alteraAulas(tipoAula vAula[], int *numAulas, char designacaoAula[], tipoUc vetorUc[], int numTotalUc){
-    int  posAula, i, hora, min, minF, horaF=0, horaTotal, codigoUc, posUc, duracaoUc;
+    int  posAula, i, hora, min, minF, horaF=0, horaTotal, codigoUc, posUc, duracaoUc, caclHoraTotal=0, posHora;
     char opcao, regimeUc[3];
 
     if(*numAulas == 0 ){
-        printf("Não existem Aulas\n");
+        printf("Não existem dados referentes às Aulas Online.\n");
     }
     else{
         posAula = procuraAulaNome(vAula, *numAulas, designacaoAula);
@@ -524,44 +455,44 @@ void alteraAulas(tipoAula vAula[], int *numAulas, char designacaoAula[], tipoUc 
                             case 'H':
                                     printf("\tEscolheu a opção de Alterar Hora\n");
 
-                                     //calcula a hora inicio/fim consoante o regime e o tipo de aula
+                                    // calcula a hora inicio/fim consoante o regime e o tipo de aula
                                     if(strcmp(regimeUc, "D") == 0){
 
-                                        vAula[posAula].hora = lerHora(8,18);
+                                        printf("Insira as Horas:\n");
+                                        vAula[posAula].hora = lerHora(8,17);
                                         hora = vAula[posAula].hora.h;
                                         min = vAula[posAula].hora.m;
-                                        printf("\n Inicio da Aula: %d:%d",hora,min);
 
-                                        hora = (hora*60);  //coloca hora inicio em minutos
-                                        horaTotal = hora + min;  //soma a hora em mimutis com os minutos
-
-                                        //calculação da hora de Fim
-                                        horaTotal = horaTotal + duracaoUc;
-                                        minF = horaTotal;
-                                        calculaHora(&horaF,&minF); //funcao calcula hora de FIM
-                                        printf("\n Fim da Aula: %d:%d\n\n",horaF,minF);
-
-                                        vAula[posAula].horaFim = horaF;
-                                        vAula[posAula].minFim = minF;
+                                        caclHoraTotal = (hora*60) + min;
                                     }
-                                    else{
+                                    else{// se for do regime pós-laboral
 
+                                        printf("Insira as Horas:\n");
                                         vAula[posAula].hora = lerHora(18,24);
                                         hora = vAula[posAula].hora.h;
                                         min = vAula[posAula].hora.m;
+
+                                        caclHoraTotal = (hora*60) + min;
+                                    }
+
+                                    // calcula hora de FIM
+                                    horaTotal = caclHoraTotal + duracaoUc;
+                                    minF = horaTotal;
+                                    calculaHora(&horaF,&minF);
+                                    vAula[posAula].horaFim = horaF;
+                                    vAula[posAula].minFim = minF;
+
+
+                                    posHora= procuraHora(vAula, *numAulas, codigoUc, vAula[posAula].data.ano, vAula[posAula].data.mes, vAula[posAula].data.dia, vAula[posAula].hora.h, vAula[posAula].hora.m );
+
+                                    if(posHora != -1){
+                                        printf("\n\nNão foi possível marcar uma aula para esta hora, pois já há existe uma com a mesma hora.");
+                                    } else {
+
                                         printf("\n Inicio da Aula: %d:%d",hora,min);
+                                        printf("\n Fim da Aula: %d:%d\n\n",horaF,minF);
 
-                                        hora = (hora*60);
-                                        horaTotal = hora + min;
-
-                                        //calculação da hora de Fim
-                                        horaTotal = horaTotal + duracaoUc;
-                                        minF = horaTotal;
-                                        calculaHora(&horaF,&minF); //funcao calcula hora de FIM
-                                        printf("\n Fim da Aula: %d:%d",horaF,minF);
-
-                                        vAula[posAula].horaFim = horaF;
-                                        vAula[posAula].minFim = minF;
+                                        printf("\n\nAula Alterada com sucesso!\n");
                                     }
 
                                     break;
@@ -579,30 +510,29 @@ void alteraAulas(tipoAula vAula[], int *numAulas, char designacaoAula[], tipoUc 
 
 }
 
-
-
 void comecarAula(tipoAula vAulas[], int numTotalAulas, char designacaoAula[],tipoUc vetorUc[], int numTotalUc){
     int posicao, codigoUc, posUc;
     char estado, opGravacao;
 
     if(numTotalAulas == 0 ){
-        printf("Não existem Aulas. \n");
+        printf("\nNão existem dados referentes às Aulas Online.\n");
     } else {
         posicao=procuraAulaNome(vAulas, numTotalAulas, designacaoAula);
 
         if(posicao == -1){
-            printf ("Aula nao encontrada");
+            printf ("\nA Designação inserida não foi encontrada.");
         }
         else{
 
             do{
-                printf("Quer alterar o estado da aula de 'agendada' para 'a decorrer'?(S-Sim, N-Nao): ");
+                //printf("Quer alterar o estado da aula de 'agendada' para 'a decorrer'?(S-Sim, N-Nao): ");
+                printf("Pretende dar início à aula de %s?(S-Sim, N-Nao): ",designacaoAula);
                 scanf("%c", &estado);
                 limpaBufferStdin();
                 estado = toupper(estado);
 
                 if(estado!='S' && estado!='N' ){
-                    printf("Inserio uma opcao invalida\n");
+                    printf("Inseriu uma opcao invalida.\n");
                 }
 
             }while (estado!='S' && estado!='N');
@@ -610,67 +540,70 @@ void comecarAula(tipoAula vAulas[], int numTotalAulas, char designacaoAula[],tip
             if(estado == 'S'){
 
                 if(strcmp(vAulas[posicao].estadoAula, "A decorrer") == 0){
-                    printf("\nAual ja se encontra a Decorrer!\n");
+                    printf("\nA aula já se encontra a Decorrer!\n");
                 }
                 else{
-                    //buscar posicao da UC
+                    // procura posicao da UC
                     codigoUc = vAulas[posicao].codigo;
                     posUc = procuraUc(vetorUc, numTotalUc, codigoUc);
 
                     strcpy(vAulas[posicao].estadoAula, "A decorrer");
-                    printf("\nComecou a %s \n\n",vAulas[posicao].designacao);
 
-                    //Gravacao da Aula
+                    // gravaçao da Aula
                     do{
-                        printf("Quer gravar a aula?(S-Sim, N-Nao):");
+                        printf("Pretende gravar a aula?(S-Sim, N-Nao):");
                         scanf("%c", &opGravacao);
                         limpaBufferStdin();
                         opGravacao = toupper(opGravacao);
 
                         if(opGravacao!='S' && opGravacao!='N' ){
-                            printf("Inserio uma opcao invalida\n");
+                            printf("Inseriu uma opcao invalida\n");
                         }
 
                     }while (opGravacao!='S' && opGravacao!='N');
 
                     if(opGravacao == 'S'){
-                        printf("\nEscolheu opcao %c - aula a gravar!",opGravacao);
+                        printf("\nComecou a aula de %s, esta aula vai ser gravada.",vAulas[posicao].designacao);
                         strcpy(vAulas[posicao].gravacao, "S");
+                        vetorUc[posicao].numGravacoes++;
                     }else{
-                        printf("\nEscolheu opcao %c - aula nao vai ser gravada",opGravacao);
+                        printf("\nComecou a aula de %s, esta aula não vai ser gravada.",vAulas[posicao].designacao);
                         strcpy(vAulas[posicao].gravacao, "N");
                     }
 
-                    //actualiza a quantidade de aulas agendadas no vetor da UC e a quantidade de aulas realizadas
+                    // actualiza a quantidade de aulas agendadas no vetor da UC
                     vetorUc[posUc].quantidadeAulasAgendadas = vetorUc[posUc].quantidadeAulasAgendadas - 1;
-                    vetorUc[posUc].quantAulasRealizadas = vetorUc[posUc].quantAulasRealizadas + 1;
-
                 }
 
             }else{
-                printf("\nNao quiz mudar o estado da aula\n");
+                printf("\nO estado da aula não foi alterado\n");
             }
 
         }
     }
 }
 
-void terminarAula(tipoAula vAulas[], int numTotalAulas, char designacaoAula[]){
-    int posicao, i;
+
+
+void terminarAula(tipoAula vAulas[], int numTotalAulas, char designacaoAula[],tipoUc vetorUc[],int numTotalUc){
+    int posicao,codigoUc,posUc;
     char estado;
 
     if(numTotalAulas == 0 ){
-        printf("Não existem Aulas.\n");
+        printf("Não existem dados referentes às Aulas Online.\n");
 
     } else {
         posicao=procuraAulaNome(vAulas, numTotalAulas, designacaoAula);
 
+        codigoUc = vAulas[posicao].codigo;
+        posUc = procuraUc(vetorUc, numTotalUc, codigoUc);
+
         if(posicao == -1){
-            printf ("Aula nao está agendada");
+            printf ("A Designação inserida não foi encontrada.");
         }
         else{
             do{
-                printf("Quer alterar o estado da aula de 'a decorrer' para 'realizada'?(S-Sim, N-Nao): ");
+                printf("Pretende terminar a aula de %s? (S-Sim, N-Nao): ",designacaoAula);
                 scanf(" %c", &estado);
                 limpaBufferStdin();
                 estado = toupper(estado);
@@ -680,22 +613,24 @@ void terminarAula(tipoAula vAulas[], int numTotalAulas, char designacaoAula[]){
                 }
             } while (estado!='S' && estado!='N');
 
-
             if(estado == 'S'){
                 if(strcmp(vAulas[posicao].designacao, "Realizada") == 0){
-                    printf("\nAula já realizada!\n");
+                    printf("\nA aula que pretende terminar já se encontra realizada!\n");
                 }
                 else{
                     strcpy(vAulas[posicao].estadoAula, "Realizada");
-                    printf("\nTerminou a %s\n",vAulas[posicao].designacao);
+                    printf("\nFoi terminada a aula de %s.\n",vAulas[posicao].designacao);
+                    vetorUc[posUc].quantAulasRealizadas = vetorUc[posUc].quantAulasRealizadas + 1;
                 }
             }
             else{
-                printf("\nNao quiz terminar a aula\n");
+                printf("\nO estado da aula não foi alterado.\n");
             }
         }
     }
 }
+
+
 
 tipoAula *lerFicheiroBin(tipoAula vAulas[],int *num){
     FILE *ficheiro;
@@ -745,7 +680,7 @@ void gravaFicheiroTextAula(tipoAula vAulas[],int num){
     }
     else {
 
-        fprintf(ficheiro, "Lista Todas as Aulas: %d\n\n",num);
+        fprintf(ficheiro, "NumAulas: %d\n\n",num);
 
         for (i=0; i<num; i++){
             fprintf(ficheiro,"Designacao: %s\n",vAulas[i].designacao);
@@ -755,7 +690,7 @@ void gravaFicheiroTextAula(tipoAula vAulas[],int num){
             fprintf(ficheiro,"%d\t",vAulas[i].data.mes);
             fprintf(ficheiro,"%d\n",vAulas[i].data.ano);
             fprintf(ficheiro,"Hora de Inicio: %d:%d\n",vAulas[i].hora.h,vAulas[i].hora.m);
-            fprintf(ficheiro,"Hora de Fim: %d:%d\n",vAulas[i].horaFim,vAulas[i].minFim);
+            fprintf(ficheiro,"Hora de Fim: %d:%d\n\n",vAulas[i].horaFim,vAulas[i].minFim);
         }
 
         erro = fclose(ficheiro);
@@ -780,7 +715,7 @@ void  gravaFicheiroBin(tipoAula vAulas[],int num) {
 
         fwrite(&num,sizeof(int),1,ficheiro);
         gravarDados = fwrite(vAulas,sizeof(tipoAula),num,ficheiro);
-        printf("\n Aulas escritas gravadas = %d \n", gravarDados);
+        //printf("Aulas escritas gravadas = %d \n", gravarDados);
 
         gravaFicheiroTextAula(vAulas,num);
 

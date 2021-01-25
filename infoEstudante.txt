@@ -1,28 +1,22 @@
+Estudantes:0
+Estudantes:0
 Estudantes:1
 
 Numero Estudante: 1111
-Nome: Luis Marques
+Nome: ana
 Regime: d
 Estudantes:1
 
 Numero Estudante: 1111
-Nome: Luis Marques
+Nome: ana
 Regime: d
-Estudantes:2
+Estudantes:1
 
 Numero Estudante: 1111
-Nome: Luis Marques
+Nome: ana
 Regime: d
-
-Numero Estudante: 1234
-Nome: Mario Silva
-Regime: d
-Estudantes:2
+Estudantes:1
 
 Numero Estudante: 1111
-Nome: Luis Marques
-Regime: d
-
-Numero Estudante: 1234
-Nome: Mario Silva
+Nome: ana
 Regime: d

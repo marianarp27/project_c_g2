@@ -16,10 +16,10 @@ char menu(int numTotalUc, int quantAulasAgendadas, int quantAulasRealizadas, int
     char opcao;
 
     printf("\n\n************************ Menu Principal ************************");
-    printf("\nQuantidade de UC's: %d", numTotalUc);
-    printf("\tQnt. aulas agendadas: %d", quantAulasAgendadas);
-    printf("\nQnt. aulas realizadas: %d", quantAulasRealizadas);
-    printf("\tQnt. aulas gravadas: %d\n", quantAulasGravadas);
+    printf("\nQuant. Unidades Curriculares: %d", numTotalUc);
+    printf("\t\tQuant. aulas agendadas: %d", quantAulasAgendadas);
+    printf("\nQuant. aulas realizadas: %d", quantAulasRealizadas);
+    printf("\t\tQuant. aulas gravadas: %d\n",quantAulasGravadas);
 
     printf("\nU - Unidades Curriculares");
     printf("\nA - Aulas online");
@@ -39,8 +39,8 @@ char menu(int numTotalUc, int quantAulasAgendadas, int quantAulasRealizadas, int
 
 char menuAulas(){
     char opcao;
-    printf("\n\n ----------------- Menu de Aulas Online -----------------");
-    printf("\n L - Listar Todas Aulas");
+    printf("\n\n ----------------- Menu Aulas Online -----------------");
+    printf("\n L - Listar Aulas");
     printf("\n P - Procurar Aula");
     printf("\n A - Agendar Aula");
     printf("\n M - Modificar Agendamento");
@@ -57,7 +57,7 @@ char submenuAulas(){
     char opcao;
     printf("\n\n ---------- Sub Menu das Listagens das Aulas  ---------");
     printf("\n Pretende Listas:");
-    printf("\n t - Todas as Aula");
+    printf("\n T - Todas as Aula");
     printf("\n A - Aulas Agendadas");
     printf("\n D - Aulas a Decorrer");
     printf("\n R - Aulas Realizadas");
@@ -74,6 +74,7 @@ char subMenuUc(){
 
     printf("\n\n ----------------- Sub Menu de Unidades Curriculares -----------------");
     printf("\n L - Listar UC's");
+    printf("\n P - Pesquisar Código UC");
     printf("\n I - Inserir UC");
     printf("\n M - Modificar UC");
     printf("\n E - Eliminar UC");
@@ -143,10 +144,12 @@ char subMenuAlteraUC(){
     char opcaoUc;
     printf("\n\n Alterar Campo das Unidades Curriculares");
     printf("\n\t A - Designação");
-    printf("\n\t B - Tipo (T, TP ou PL)");
-    printf("\n\t C - Semestre");
-    printf("\n\t D - Regime (D,PL)");
-    printf("\n\t E - Duração de cada aula(em minutos)");
+    printf("\n\t B - Tipo de Aula (S-Obrigatorio, N-Opcional)");
+    printf("\n\t C - Tipo de UC (T, TP ou PL)");
+    printf("\n\t D - Semestre");
+    printf("\n\t E - Regime (D,PL)");
+    printf("\n\t F - Total de horas previstas");
+    printf("\n\t G - Duração de cada aula(em minutos)");
     printf("\n\t V - Voltar\n");
     printf("\n\t Insira Opção ->");
 
@@ -161,8 +164,8 @@ char subMenuAlteraAula(){
     char opcaoAula;
     printf("\n\n Alterar Campo das Aulas");
     printf("\n\t N - Nome Docente");
-    printf("\n\t D - Data");
     printf("\n\t H - Hora");
+    printf("\n\t D - Data");
     printf("\n\t V - Voltar\n");
     printf("\n\t Insira Opção ->");
 
